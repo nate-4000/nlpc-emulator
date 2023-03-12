@@ -26,7 +26,6 @@ def twos_comp(val, bits):
     return val 
 
 code = byte_pairs
-pointer = 0
 version = input("nlpc version (nlpc-1, nlpc-1old, nlpc-2):")
 if version == "nlpc-1":
     bus = True
@@ -70,19 +69,26 @@ calcmodes = {
     7: (lambda x, y: (x ^ y) & 0xFF),
 }
 
-while pointer > len(code):
+print("starting emulation")
+pointer = 0
+
+while pointer < len(code):
     ins = code[pointer]
     opcode = ins[0]
     data = ins[1] & 0xFF
     inc = True
     if opcode == dinst["cjnz"]:
-        pointer = data*2
-        inc = False
+        print("%d: cjnz %s" % (pointer, data))
+        if regs["acc"] != 0:
+            pointer = data*2
+            inc = False
     elif opcode == dinst["cmov"]:
+        print("%d: cmov %s" % (pointer, data))
         movreg0 = data & 0x0F
         movreg1 = (data & 0xF0) / 16
         regs[regnums[movreg1]] = regs[regnums[movreg0]]
     elif opcode == dinst["cimm"]:
-        regs["imm"] = data && 0xFF
+        print("%d: cimm %s" % (pointer, data))
+        regs["imm"] = data & 0xFF
     if inc:
         pointer += 1
