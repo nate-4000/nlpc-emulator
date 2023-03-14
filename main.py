@@ -1,4 +1,5 @@
 import os
+from int8 import int8
 
 inputfile = None
 while inputfile is None or not os.path.exists(inputfile):
@@ -19,25 +20,14 @@ for i in range(0, len(byte_list), 2):
 
 # ok time to execution!!!11!
 
-def twos_comp(val, bits):
-    """compute the 2's complement of int value val"""
-    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
-        val = val - (1 << bits)        # compute negative value
-    return val 
-
 code = byte_pairs
-version = input("nlpc version (nlpc-1, nlpc-1old, nlpc-2):")
-if version == "nlpc-1":
-    bus = True
-elif version == "nlpc-1old":
-    bus = False
-else:
-    bus = "nlpc-2"
+print("nlpc-1old emulator")
 
 dinst = {
     "cjnz": 127,
     "cmov": 112,
-    "cimm": 119
+    "cimm": 119,
+    "calc": 122
 }
 
 regs = {
@@ -58,15 +48,15 @@ regnums = {
 }
 
 calcmodes = {
-    0: (lambda x, y: (x + y) & 0xFF),
-    1: (lambda x, y: (x - y) & 0xFF),
-    2: (lambda x, y: (x * y) & 0xFF),
-    3: (lambda x, y: (x // y) & 0xFF),
+    0: (lambda x, y: x + y),
+    1: (lambda x, y: x - y),
+    2: (lambda x, y: x * y),
+    3: (lambda x, y: x // y),
     
-    4: (lambda x, y: (x & y) & 0xFF),
-    5: (lambda x, y: (x | y) & 0xFF),
-    6: (lambda x, y: ~(x & y) & 0xFF),
-    7: (lambda x, y: (x ^ y) & 0xFF),
+    4: (lambda x, y: x & y),
+    5: (lambda x, y: x | y),
+    6: (lambda x, y: ~x & y),
+    7: (lambda x, y: x ^ y),
 }
 
 print("starting emulation")
@@ -89,6 +79,6 @@ while pointer < len(code):
         regs[regnums[movreg1]] = regs[regnums[movreg0]]
     elif opcode == dinst["cimm"]:
         print("%d: cimm %s" % (pointer, data))
-        regs["imm"] = data & 0xFF
+        regs["imm"] = data
     if inc:
         pointer += 1

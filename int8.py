@@ -1,6 +1,14 @@
 import ctypes
 
 class int8(ctypes.c_int8):
+    """
+ever needed 8 bit numbers that dont mess with you?
+too scared to touch ctypes?
+use this!
+works great!
+doesnt kill your family! (citation needed)
+perfect twos complement!
+    """
     def __repr__(self):
         return str(self.value)
     
@@ -42,6 +50,9 @@ class int8(ctypes.c_int8):
     
     def __or__(self, other):
         return int8(self.value | other.value)
+    
+    def __eq__(self, other):
+        return int(self) == int(other)
     
     def __neg__(self):
         return int8(-self.value)
