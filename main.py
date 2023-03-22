@@ -31,12 +31,12 @@ dinst = {
 }
 
 regs = {
-    "imm": 0,
-    "x": 0,
-    "y": 0,
-    "acc": 0,
-    "bus0": 0,
-    "bus1": 0
+    "imm": int8(0),
+    "x": int8(0),
+    "y": int8(0),
+    "acc": int8(0),
+    "bus0": int8(0),
+    "bus1": int8(0)
 }
 regnums = {
     0: "imm",
@@ -64,8 +64,8 @@ pointer = 0
 
 while pointer < len(code):
     ins = code[pointer]
-    opcode = ins[0]
-    data = ins[1] & 0xFF
+    opcode = int(ins[0])
+    data = int8(ins[1])
     inc = True
     if opcode == dinst["cjnz"]:
         print("%d: cjnz %s" % (pointer, data))
@@ -74,8 +74,8 @@ while pointer < len(code):
             inc = False
     elif opcode == dinst["cmov"]:
         print("%d: cmov %s" % (pointer, data))
-        movreg0 = data & 0x0F
-        movreg1 = (data & 0xF0) / 16
+        movreg0 = int(data & int8(0x0F))
+        movreg1 = int((data & int8(0xF0)) / int(16))
         regs[regnums[movreg1]] = regs[regnums[movreg0]]
     elif opcode == dinst["cimm"]:
         print("%d: cimm %s" % (pointer, data))
